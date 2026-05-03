@@ -3,6 +3,7 @@ mod handlers;
 mod models;
 
 use axum::{routing::post, Router};
+use axum::routing::get;
 
 #[tokio::main]
 async fn main() {
@@ -20,6 +21,7 @@ async fn main() {
 
     let app = Router::new()
         .route("/api/shorten", post(handlers::shorten_link))
+        .route("/:short_code", get(handlers::redirect_link))
         .with_state(pool);
 
 
