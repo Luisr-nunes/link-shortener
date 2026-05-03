@@ -1,0 +1,15 @@
+# Diretório de compliação do Cargo
+/target/
+
+# Arquivo de bloqueio do Cargo
+Cargo.lock
+
+# Variáveis de ambiente e arquivos sensíveis
+.env
+.env.local
+
+# Arquivos de sistema operacional
+.DS_Store
+Thumbs.db
+
+
