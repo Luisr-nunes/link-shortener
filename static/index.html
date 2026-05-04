@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encurtador de Links</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+        h1 { color: #1a73e8; margin-bottom: 1.5rem; }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover { background-color: #1557b0; }
+        #result {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 6px;
+            display: none;
+            word-break: break-all;
+        }
+        .success { background-color: #e6f4ea; color: #1e8e3e; border: 1px solid #ceead6; }
+        .error { background-color: #fce8e6; color: #d93025; border: 1px solid #fad2cf; }
+        a { color: #1a73e8; font-weight: bold; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Encurtador de Links</h1>
+        <input type="url" id="longUrl" placeholder="Cole seu link longo aqui (ex: https://...)" required>
+        <button onclick="shorten()">Encurtar Link</button>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function shorten() {
+            const longUrl = document.getElementById('longUrl').value;
+            const resultDiv = document.getElementById('result');
+            
+            if (!longUrl) {
+                alert("Por favor, insira uma URL!");
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/shorten', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ long_url: longUrl })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    const shortUrl = `${window.location.origin}/r/${data.short_code}`;
+                    resultDiv.className = 'success';
+                    resultDiv.style.display = 'block';
+                    resultDiv.innerHTML = `Link encurtado com sucesso!<br><br><a href="${shortUrl}" target="_blank">${shortUrl}</a>`;
+                } else {
+                    throw new Error(data.message || "Erro ao encurtar o link");
+                }
+            } catch (error) {
+                resultDiv.className = 'error';
+                resultDiv.style.display = 'block';
+                resultDiv.innerText = "Erro: " + error.message;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -4,6 +4,7 @@ mod models;
 
 use axum::{routing::post, Router};
 use axum::routing::get;
+use tower_http::services::ServeDir;
 
 #[tokio::main]
 async fn main() {
@@ -20,8 +21,9 @@ async fn main() {
     };
 
     let app = Router::new()
+        .nest_service("/", ServeDir::new("static"))
         .route("/api/shorten", post(handlers::shorten_link))
-        .route("/:short_code", get(handlers::redirect_link))
+        .route("/r/:short_code", get(handlers::redirect_link))
         .with_state(pool);
 
 
