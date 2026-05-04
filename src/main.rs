@@ -12,6 +12,14 @@ async fn main() {
     let pool = match db::estabilish_connection().await {
         Ok(pool) => {
             println!("Conexão com o banco de dados establecida com sucesso!");
+            
+            // Rodar migrations automaticamente
+            if let Err(e) = sqlx::migrate!("./migrations").run(&pool).await {
+                eprintln!("Falha ao rodar migrations: {}", e);
+            } else {
+                println!("Migrations executadas com sucesso!");
+            }
+            
             pool
         }
         Err(err) => {

@@ -1,0 +1,12 @@
+-- 20260504_create_links_table.sql
+-- Migration para criar a tabela inicial de links
+
+CREATE TABLE IF NOT EXISTS links (
+    id SERIAL PRIMARY KEY,
+    short_code VARCHAR(10) NOT NULL UNIQUE,
+    long_url TEXT NOT NULL,
+    clicks INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_short_code ON links(short_code);
